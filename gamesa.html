@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saqifah</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff9a9e, #66faf5);
+            color: #fff;
+        }
+        .letter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 10px;
+            display: none;
+            position: relative;
+        }
+        .letter {
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            position: absolute;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .letter:hover {
+            transform: scale(1.2);
+        }
+        .letter.correct {
+            background-color: #4CAF50;
+        }
+        .letter.wrong {
+            background-color: #FF5733;
+        }
+        .letter:nth-child(odd) {
+            background-color: #FFD700;
+        }
+        .letter:nth-child(even) {
+            background-color: #00CED1;
+        }
+        #feedback, #timer {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        #start-button {
+            background: #4CAF50;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #start-button:hover {
+            background: #45a049;
+        }
+        #target-letter {
+            font-size: 40px;
+            font-weight: bold;
+            display: inline-block;
+            color: yellow;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            width: 350px;
+            display: none;
+        }
+        .popup h2 {
+            font-size: 24px;
+            color: #ff5733;
+        }
+        .popup p {
+            font-size: 18px;
+        }
+        .popup button {
+            background: #ff5733;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .popup button:hover {
+            background: #c70039;
+        }
+    </style>
+</head>
+<body>
+    <h1>𝘼𝙨𝙨𝙖𝙡𝙖𝙢𝙪𝙡𝙖𝙞𝙠𝙪𝙢, <span id="username-display"></span>!</h1>
+    <p>Waktu Kamu: <span id="timer">30</span> detik</p>
+    <p>Cari huruf: <span id="target-letter"></span></p>
+    
+    <button id="start-button" onclick="startGame()">Mulai Game</button>
+
+    <div class="letter-container" id="letter-container"></div>
+    <p id="feedback"></p>
+
+    <div class="popup" id="popup">
+        <h2>Waktu Habis!</h2>
+        <p>Skor Kamu: <span id="final-score"></span></p>
+        <button onclick="returnToMenu()">Ganti Pemain</button>
+    </div>
+
+    <script>
+        const hijaiyah = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'];
+        let targetLetter = '';
+        let level = 1;
+        let timeLeft = 30;
+        let timer;
+        let gameStarted = false;
+
+        document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Pemain';
+
+        function startGame() {
+            if (gameStarted) return;
+            
+            gameStarted = true;
+            document.getElementById('start-button').style.display = 'none';
+            document.getElementById('letter-container').style.display = 'flex';
+            startTimer();
+            generateGame();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    document.getElementById('timer').textContent = timeLeft;
+                } else {
+                    clearInterval(timer);
+                    showPopup();
+                }
+            }, 1000);
+        }
+
+        function generateGame() {
+            const numLetters = Math.min(6 + level, hijaiyah.length);
+            const shuffled = hijaiyah.sort(() => 0.5 - Math.random()).slice(0, numLetters);
+            targetLetter = shuffled[Math.floor(Math.random() * shuffled.length)];
+            document.getElementById('target-letter').textContent = targetLetter;
+            document.getElementById('feedback').textContent = '';
+
+            const container = document.getElementById('letter-container');
+            container.innerHTML = '';
+            let positions = [];
+
+            shuffled.forEach(letter => {
+                let letterDiv = document.createElement('div');
+                letterDiv.classList.add('letter');
+                letterDiv.textContent = letter;
+
+                let top, left;
+                let overlapping;
+
+                do {
+                    top = Math.random() * 300 + 30;
+                    left = Math.random() * 300 + 30;
+                    overlapping = positions.some(pos => Math.abs(pos.top - top) < 60 && Math.abs(pos.left - left) < 60);
+                } while (overlapping);
+
+                positions.push({ top, left });
+                letterDiv.style.top = top + 'px';
+                letterDiv.style.left = left + 'px';
+
+                letterDiv.addEventListener('click', () => checkAnswer(letterDiv, letter));
+                container.appendChild(letterDiv);
+            });
+        }
+
+        function checkAnswer(element, letter) {
+            if (letter === targetLetter) {
+                element.classList.add('correct');
+                document.getElementById('feedback').textContent = 'Benar!';
+                document.getElementById('feedback').style.color = '#4CAF50';
+                level++;
+                setTimeout(() => generateGame(), 500);
+            } else {
+                element.classList.add('wrong');
+                document.getElementById('feedback').textContent = `Salah! Huruf "${letter}" bukan yang dicari.`;
+                document.getElementById('feedback').style.color = '#FF5733';
+                setTimeout(() => element.classList.remove('wrong'), 500);
+            }
+        }
+
+        function showPopup() {
+            document.getElementById('final-score').textContent = level - 1;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function returnToMenu() {
+            localStorage.removeItem('username'); 
+            window.location.href = "index.html"; 
+        }
+    </script>
+</body>
+</html>
