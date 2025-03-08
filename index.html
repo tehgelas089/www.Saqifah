@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saqifah</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #84fab0);
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            position: relative;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 320px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-container h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #ff6f61;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .login-container input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+            color: #333;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-container input[type="text"]:focus {
+            border-color: #ff6f61;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background: #ff6f61;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-container button:hover {
+            background: #fb2415;
+        }
+
+        .login-container .register-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .login-container .register-link a {
+            color: #ff6f61;
+            text-decoration: none;
+        }
+
+        .login-container .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .login-container .decorative-icons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        .decorative-icons span {
+            color: #ff6f61;
+        }
+
+        /* Tambahan emoji di latar belakang */
+        .background-emojis span {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.3;
+            animation: float 4s infinite alternate ease-in-out;
+        }
+
+        /* Animasi agar emoji bergerak */
+        @keyframes float {
+            from { transform: translateY(0px); }
+            to { transform: translateY(15px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Emoji Latar Belakang -->
+    <div class="background-emojis">
+        <span style="top: 10%; left: 5%;">📚</span>
+        <span style="top: 15%; right: 10%;">🎨</span>
+        <span style="top: 30%; left: 20%;">🧩</span>
+        <span style="top: 45%; right: 15%;">🎮</span>
+        <span style="top: 60%; left: 10%;">📝</span>
+        <span style="top: 75%; right: 5%;">🔢</span>
+        <span style="top: 90%; left: 40%;">🚀</span>
+    </div>
+
+    <div class="login-container">
+        <h1>Buat nama kamu</h1>
+        <input type="text" id="username" placeholder="Nama?" name="username">
+        <p id="error-message" style="color: red;"></p>
+        <button onclick="login()">🌷🎁  Ｐ𝕝𝐚ү  🐨🎁</button>
+       
+        <div class="register-link">
+            <p>Belajar sambil bermain!</p>
+        </div>
+
+        <!-- Dekorasi tambahan -->
+        <div class="decorative-icons">
+            <span>🎓</span>
+            <span>📚</span>
+            <span>🎨</span>
+            <span>🧩</span>
+            <span>🚀</span>
+            <span>🎮</span>
+        </div>
+    </div>
+
+<script>
+    function login() {
+        const username = document.getElementById('username').value;
+        const errorMessage = document.getElementById('error-message');
+
+        if (username.trim() === '') {
+            errorMessage.textContent = 'Username tidak boleh kosong!';
+            return;
+        }
+
+        localStorage.setItem('username', username);
+        window.location.href = 'gamesa.html';
+    }
+</script>
+
+</body>
+</html>
